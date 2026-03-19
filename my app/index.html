@@ -7,9 +7,9 @@
 <body style="text-align:center; margin-top:50px; font-family:sans-serif;">
 
   <h1>🔥 أهلاً بيك في مشروعي</h1>
-  <p>أول موقع ليك شغال أونلاين 🎉</p>
+  <p>اضغط الزرار علشان نبعت بيانات لـ Supabase</p>
 
-  <button onclick="sendMessage()">اضغط هنا</button>
+  <button onclick="sendMessage()">إرسال</button>
 
   <p id="result"></p>
 
@@ -17,7 +17,9 @@
     async function sendMessage() {
       const res = await fetch('/api?text=hello');
       const data = await res.json();
-      document.getElementById('result').innerText = "تم الإرسال ✅";
+
+      document.getElementById('result').innerText =
+        "تم الحفظ في Supabase ✅";
     }
   </script>
 
