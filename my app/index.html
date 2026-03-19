@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>مشروعي الأول</title>
+</head>
+<body style="text-align:center; margin-top:50px; font-family:sans-serif;">
+
+  <h1>🔥 أهلاً بيك في مشروعي</h1>
+  <p>أول موقع ليك شغال أونلاين 🎉</p>
+
+  <button onclick="sendMessage()">اضغط هنا</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function sendMessage() {
+      const res = await fetch('/api?text=hello');
+      const data = await res.json();
+      document.getElementById('result').innerText = "تم الإرسال ✅";
+    }
+  </script>
+
+</body>
+</html>
