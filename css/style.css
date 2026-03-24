@@ -1,9 +1,0 @@
-:root{--p:#2563eb;--bg:#f8fafc;--c:#fff;--t:#1e293b;--b:#e2e8f0}
-*{box-sizing:border-box}
-html{direction:rtl}
-body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,Tahoma,Arial}
-.container{max-width:1200px;margin:auto;padding:12px}
-.btn{padding:10px 14px;background:var(--p);color:#fff;border:0;border-radius:8px;cursor:pointer}
-.card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:14px}
-.grid{display:grid;gap:12px}
-.muted{color:#64748b}
