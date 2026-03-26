@@ -1,0 +1,103 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+    function isAuth() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+
+    function isAccountActive(userId) {
+      let userDoc = get(/databases/$(database)/documents/users/$(userId)).data;
+      return userDoc.isActive == true && userDoc.accountStatus == 'active';
+    }
+
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // --- Global Admin Rule ---
+    match /{document=**} {
+        allow read, write: if isAdmin();
+    }
+
+    // --- Collection-Specific Rules for NON-ADMINS ---
+
+    // SERVICES: Any active user can read services.
+    match /services/{serviceId} {
+      allow read: if isAuth() && isAccountActive(request.auth.uid);
+      allow write: if false; 
+    }
+
+    // INVOICES: Users can only list their own invoices or invoices of users they manage.
+    match /invoices/{invoiceId} {
+      allow get: if isAuth() && resource.data.createdBy == request.auth.uid;
+      allow list: if isAuth() && request.query.where.size() > 0 && request.query.where[0].fieldPath == 'createdBy' && request.query.where[0].string_value == request.auth.uid;
+      allow create: if isAuth() && isAccountActive(request.auth.uid);
+      allow update, delete: if false;
+    }
+    
+    // USERS
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if isAdmin();
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update: if isOwner(userId) && request.resource.data.diff(resource.data).affectedKeys()
+                        .hasOnly(['displayName', 'fullName', 'mobile', 'address', 'businessName', 'businessAddress', 'idFrontUrl', 'idBackUrl', 'storePhotoUrl']);
+
+      allow delete: if false;
+    }
+    
+    // SCRATCH CARDS: Admin-only access, covered by global rule.
+    match /scratchCards/{cardId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ERROR LOGS: Authenticated users can create. Admins have access via global rule.
+    match /errorLogs/{logId} {
+        allow read: if isAdmin();
+        allow write: if isAuth();
+    }
+    
+    // DEPOSIT METHODS: Active users can read.
+    match /depositMethods/{methodId} {
+        allow read: if isAuth() && isAccountActive(request.auth.uid);
+        allow write: if false;
+    }
+
+    // DEPOSIT REQUESTS: Users manage their own.
+    match /depositRequests/{requestId} {
+      allow get: if isAuth() && resource.data.userId == request.auth.uid;
+      allow list: if isAuth() && request.query.where.size() > 0 && request.query.where[0].fieldPath == 'userId' && request.query.where[0].string_value == request.auth.uid;
+      
+      allow create: if isAuth() && isAccountActive(request.auth.uid) && 
+                       request.resource.data.userId == request.auth.uid && 
+                       request.resource.data.status == 'pending';
+
+      allow update, delete: if false;
+    }
+    
+    // COMPLAINTS / SUPPORT TICKETS: Users manage their own.
+    match /complaints/{complaintId} {
+      allow get: if isAuth() && resource.data.userId == request.auth.uid;
+      allow list: if isAuth() && request.query.where.size() > 0 && request.query.where[0].fieldPath == 'userId' && request.query.where[0].string_value == request.auth.uid;
+      
+      allow create: if isAuth() &&
+                      request.resource.data.userId == request.auth.uid &&
+                      request.resource.data.status == 'open';
+
+      allow update, delete: if false;
+    }
+    
+    // SYSTEM SETTINGS: Read for active users.
+    match /systemSettings/{settingId} {
+        allow read: if isAuth() && isAccountActive(request.auth.uid);
+        allow write: if false;
+    }
+  }
+}

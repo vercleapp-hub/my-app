@@ -1,0 +1,406 @@
+
+{
+  "entities": {
+    "Service": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Service",
+      "type": "object",
+      "description": "Represents a service offered by ELDoctor Pay.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the service."
+        },
+        "value": {
+          "type": "string",
+          "description": "The service code used for processing."
+        },
+        "display": {
+          "type": "string",
+          "description": "The user-friendly name of the service."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category the service belongs to (e.g., 'Mobile/Recharge')."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the service is currently active and available to users."
+        },
+        "price": {
+            "type": "number",
+            "description": "The sale price of the service, especially for fixed-price items like scratch cards.",
+            "default": 0
+        },
+        "commission": {
+            "type": "number",
+            "description": "The commission rate or fixed amount for this service.",
+            "default": 0
+        }
+      },
+      "required": [
+        "id",
+        "value",
+        "display",
+        "category",
+        "isActive",
+        "price",
+        "commission"
+      ]
+    },
+    "Invoice": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Invoice",
+      "type": "object",
+      "description": "Represents an invoice generated for a service transaction.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the invoice."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date the invoice was created.",
+          "format": "date"
+        },
+        "serviceName": {
+          "type": "string",
+          "description": "The display name of the service at the time of transaction."
+        },
+        "serviceCode": {
+          "type": "string",
+          "description": "The service code used for processing."
+        },
+        "transactionId": {
+          "type": "string",
+          "description": "The transaction identifier provided by the service."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details about the transaction."
+        },
+        "amount": {
+          "type": "string",
+          "description": "The amount of the transaction."
+        },
+        "fees": {
+          "type": "string",
+          "description": "The fees associated with the transaction."
+        },
+        "total": {
+          "type": "string",
+          "description": "The total amount (amount + fees) of the transaction."
+        },
+        "referenceCode": {
+          "type": "string",
+          "description": "A unique reference code for the transaction."
+        },
+        "apiId": {
+          "type": "string",
+          "description": "The local transaction ID sent to the payment API."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the invoice was created.",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "The UID of the user who created the invoice."
+        },
+        "userName": {
+          "type": "string",
+          "description": "The display name of the user at the time of the transaction."
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the invoice.",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "scratchCardCode": {
+            "type": ["string", "null"],
+            "description": "The actual scratch card code if this invoice is for a card vending service."
+        },
+        "commission": {
+            "type": "number",
+            "description": "The commission earned by the user for this transaction.",
+            "default": 0
+        }
+      },
+      "required": [
+        "id",
+        "date",
+        "serviceName",
+        "serviceCode",
+        "transactionId",
+        "amount",
+        "fees",
+        "total",
+        "referenceCode",
+        "apiId",
+        "timestamp",
+        "createdBy",
+        "status"
+      ]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID from Firebase Authentication." },
+        "accountNumber": { "type": "string", "description": "Unique, user-facing account number." },
+        "displayName": { "type": "string", "description": "The user's display name, typically their full name." },
+        "fullName": { "type": "string", "description": "The user's full legal name." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "mobile": { "type": "string", "description": "The user's mobile phone number." },
+        "nationalId": { "type": "string", "description": "The user's national ID number." },
+        "address": { "type": "string", "description": "The user's detailed home address." },
+        "businessName": { "type": "string", "description": "The name of the user's business." },
+        "businessAddress": { "type": "string", "description": "The address of the user's business." },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "The role of the user, which determines their permissions." },
+        "accountStatus": { "type": "string", "enum": ["pending", "active", "rejected"], "description": "The approval status of the user's account." },
+        "balance": { "type": "number", "description": "The user's current wallet balance." },
+        "totalCommission": { "type": "number", "description": "The total commission earned by the user.", "default": 0 },
+        "isActive": { "type": "boolean", "description": "Whether the user account is active or disabled by an admin." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "The timestamp when the user profile was created." },
+        "idFrontUrl": { "type": "string", "format": "uri", "description": "URL to the front of the user's ID card image." },
+        "idBackUrl": { "type": "string", "format": "uri", "description": "URL to the back of the user's ID card image." },
+        "storePhotoUrl": { "type": "string", "format": "uri", "description": "URL to the user's store/business photo." }
+      },
+      "required": [
+        "uid",
+        "accountNumber",
+        "displayName",
+        "fullName",
+        "email",
+        "mobile",
+        "nationalId",
+        "address",
+        "businessName",
+        "businessAddress",
+        "role",
+        "accountStatus",
+        "balance",
+        "totalCommission",
+        "isActive",
+        "createdAt",
+        "idFrontUrl",
+        "idBackUrl",
+        "storePhotoUrl"
+      ]
+    },
+    "ScratchCard": {
+      "title": "Scratch Card",
+      "description": "Represents a single scratch card in the inventory.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the scratch card document."
+        },
+        "serviceValue": {
+          "type": "string",
+          "description": "The service code (e.g., 'crvo') this card is for, linking it to the services collection."
+        },
+        "code": {
+          "type": "string",
+          "description": "The actual scratch card recharge code."
+        },
+        "isUsed": {
+          "type": "boolean",
+          "description": "True if the card has been sold, false if it's available in inventory."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the card was added to inventory."
+        },
+        "usedAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when the card was sold."
+        },
+        "usedBy": {
+          "type": ["string", "null"],
+          "description": "The UID of the user who purchased the card."
+        },
+        "invoiceId": {
+          "type": ["string", "null"],
+          "description": "The ID of the invoice document for this card's sale."
+        }
+      },
+      "required": [
+        "serviceValue",
+        "code",
+        "isUsed",
+        "createdAt"
+      ]
+    },
+     "ErrorLog": {
+      "title": "Error Log",
+      "description": "Represents a log entry for an error that occurred in the application.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the error log."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of when the error occurred."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who encountered the error."
+        },
+        "userName": {
+          "type": "string",
+          "description": "The display name of the user."
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "The error message."
+        },
+        "errorDetails": {
+          "type": "string",
+          "description": "Additional details or stack trace of the error."
+        },
+        "context": {
+            "type": "string",
+            "description": "The context in which the error occurred (e.g., 'Invoice Creation')."
+        }
+      },
+      "required": [
+        "id",
+        "timestamp",
+        "userId",
+        "userName",
+        "errorMessage",
+        "context"
+      ]
+    },
+    "DepositMethod": {
+      "title": "Deposit Method",
+      "description": "Represents a method for users to deposit funds (e.g., bank transfer, Vodafone Cash).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "description": "Name of the method (e.g., 'Vodafone Cash')." },
+        "details": { "type": "string", "description": "Account details (e.g., '01012345678')." },
+        "instructions": { "type": "string", "description": "Instructions for the user (e.g., 'Include your user ID in the notes')." },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["name", "details", "instructions", "isActive"]
+    },
+    "DepositRequest": {
+      "title": "Deposit Request",
+      "description": "A user's request to have their balance updated after a manual deposit.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "UID of the user making the request." },
+        "userName": { "type": "string", "description": "Display name of the user." },
+        "amount": { "type": "number" },
+        "methodId": { "type": "string", "description": "ID of the deposit method used." },
+        "methodName": { "type": "string", "description": "Name of the deposit method used." },
+        "transactionRef": { "type": "string", "description": "Transaction reference from the user's payment app." },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+        "reviewedBy": { "type": ["string", "null"], "description": "UID of the admin who reviewed the request." }
+      },
+      "required": ["userId", "userName", "amount", "methodId", "methodName", "transactionRef", "status", "createdAt"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global settings for the application, managed by the admin.",
+      "type": "object",
+      "properties": {
+        "paymentMode": {
+          "type": "string",
+          "enum": ["automatic", "manual"],
+          "description": "The current payment processing mode for the system."
+        }
+      },
+      "required": ["paymentMode"]
+    },
+    "Complaint": {
+      "title": "Complaint",
+      "description": "Represents a user-submitted complaint or support ticket.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the complaint." },
+        "userId": { "type": "string", "description": "UID of the user who submitted the complaint." },
+        "userName": { "type": "string", "description": "Display name of the user." },
+        "title": { "type": "string", "description": "The subject or title of the complaint." },
+        "description": { "type": "string", "description": "Detailed description of the issue." },
+        "relatedInvoiceId": { "type": ["string", "null"], "description": "Optional ID of an invoice related to the complaint." },
+        "status": { "type": "string", "enum": ["open", "in-progress", "closed"], "description": "The current status of the complaint." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the complaint was created." },
+        "updatedAt": { "type": ["string", "null"], "format": "date-time", "description": "Timestamp when the complaint was last updated by an admin." },
+        "adminNotes": { "type": ["string", "null"], "description": "Internal notes for administrators regarding the complaint." },
+        "resolution": { "type": ["string", "null"], "description": "The final resolution provided to the user." }
+      },
+      "required": ["userId", "userName", "title", "description", "status", "createdAt"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "/services/{serviceId}": {
+      "schema": {
+        "$ref": "#/backend/entities/Service"
+      },
+      "description": "Collection of services offered by ELDoctor Pay. Each document represents a single service."
+    },
+    "/invoices/{invoiceId}": {
+      "schema": {
+        "$ref": "#/backend/entities/Invoice"
+      },
+      "description": "Collection of invoices generated for service transactions. Each document represents a single invoice."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/backend/entities/UserProfile"
+      },
+      "description": "Stores user profile information, including their role and balance."
+    },
+    "/scratchCards/{cardId}": {
+      "schema": {
+        "$ref": "#/backend/entities/ScratchCard"
+      },
+      "description": "Inventory of scratch card codes. Managed only by admins."
+    },
+    "/errorLogs/{logId}": {
+      "schema": {
+        "$ref": "#/backend/entities/ErrorLog"
+      },
+      "description": "Collection of error logs for administrative review."
+    },
+    "/depositMethods/{methodId}": {
+      "schema": { "$ref": "#/backend/entities/DepositMethod" },
+      "description": "Admin-managed list of available deposit methods for users."
+    },
+    "/depositRequests/{requestId}": {
+      "schema": { "$ref": "#/backend/entities/DepositRequest" },
+      "description": "User-submitted requests for balance top-ups."
+    },
+    "/systemSettings/payment": {
+      "schema": { "$ref": "#/backend/entities/SystemSettings" },
+      "description": "A single document that holds system-wide settings, like the payment mode."
+    },
+    "/complaints/{complaintId}": {
+      "schema": { "$ref": "#/backend/entities/Complaint" },
+      "description": "User-submitted complaints or support tickets."
+    }
+  }
+}
